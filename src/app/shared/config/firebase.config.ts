@@ -1,9 +1,8 @@
 export const firebaseConfig = {
-  projectId:"upet-ca936",
-  appId:"1:73911690246:web:ac0b8f155821d2db814f87",
-  storageBucket:"upet-ca936.firebasestorage.app",
-  apiKey:"AIzaSyCFuy5u65InJhzf985kiYHgAIE40hZhwLA",
-  authDomain:"upet-ca936.firebaseapp.com",
-  messagingSenderId:"73911690246",
-  measurementId:"G-K9MRL3FL6X"
+  apiKey: "AIzaSyCWviwDtJUkwN_eLS_qDr8Er5gKXpeVETA",
+  authDomain: "upet2-cec21.firebaseapp.com",
+  projectId: "upet2-cec21",
+  storageBucket: "upet2-cec21.firebasestorage.app",
+  messagingSenderId: "246950175673",
+  appId: "1:246950175673:web:7d8099832180ba111e4c68"
 };

@@ -61,7 +61,7 @@ export class PetProfileViewComponent {
   historyId: number | undefined;
   visible = false;
   activeIndex: number | undefined = 0;
-  isTracked= false;
+  isTracked= true;
 
   productCodeForm:FormGroup = new FormGroup({});
 

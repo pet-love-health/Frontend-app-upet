@@ -26,11 +26,11 @@
   </div>
   <ng-container *ngIf="isTracked">
     <div>
-      IoT information (<strong>{{petCollarData.serial_number}}</strong>)
+      IoT information for ID <strong>{{petCollarData.serial_number}}</strong>
     </div>
     <div class="badges-container">
       <div title="Temperatura en grados centigrados" class="iot-item">
-        <div>Battery<span class="material-symbols-outlined">charging_station</span></div>
+        <div>Battery <span class="material-symbols-outlined">charging_station</span></div>
         <div class="value">{{ petCollarData.battery }} %</div>
       </div>
       <div title="Temperatura en grados centigrados" class="iot-item">
@@ -54,19 +54,19 @@
   <div class="badges-container">
     <div class="badge">
       <div>{{"pet_profile.breed" | translate}}</div>
-      <div>{{ pet?.breed }}</div>
+      <div> <strong>{{ pet?.breed }}</strong></div>
     </div>
     <div class="badge">
       <div>{{"pet_profile.species" | translate}}  </div>
-      <div>{{ pet?.species }}</div>
+      <div><strong>{{ pet?.species }}</strong></div>
     </div>
     <div class="badge">
       <div>{{"pet_profile.weight" | translate}}</div>
-      <div>{{ pet?.weight }}</div>
+      <div><strong>{{ pet?.weight }} kg</strong> </div>
     </div>
     <div class="badge">
       <div>{{"pet_profile.birthdate" | translate}}</div>
-      <div>{{ pet?.birthdate }}</div>
+      <div><strong>{{ pet?.birthdate }}</strong></div>
     </div>
   </div>
   <div class="mt-4">

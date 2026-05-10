@@ -96,7 +96,7 @@ key
     </div>
     <div class="flex justify-content-around gap-2 mb-4 mt-3">
       <p-button [label]="'profile_vet.btn_cancel' | translate" severity="secondary" (onClick)="closeDialog()"/>
-      <p-button [label]="'profile_vet.btn_save' | translate" (onClick)="submitForm()"/>
+      <p-button [label]="isUploading ? 'Uploading...' : ('profile_vet.btn_save' | translate)" (onClick)="submitForm()" [disabled]="isUploading"/>
     </div>
   </form>
 </p-dialog>

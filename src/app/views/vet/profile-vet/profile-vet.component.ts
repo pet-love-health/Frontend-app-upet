@@ -49,6 +49,7 @@ export class ProfileVetComponent {
   imageUrl: string | ArrayBuffer | null | undefined = null;
   dialogVisible: boolean = false;
   generateCodeDialogVisible: boolean = false;
+  isUploading: boolean = false;
   passwordGenerated: string = '';
 
   constructor(
@@ -85,24 +86,31 @@ export class ProfileVetComponent {
 
   }
 
-  async onImageSelect(event:any) {
+  async onImageSelect(event: any) {
     const file = event.files[0];
-    console.log(file);
     if (file) {
+      this.isUploading = true;
       const reader = new FileReader();
       reader.onload = (e) => {
-        this.imageUrl = e.target?.result; // Asigna la vista previa
+        this.imageUrl = e.target?.result;
         const fileUploadInput = document.querySelector<HTMLInputElement>('input[type="file"]');
-        if (fileUploadInput) {
-          fileUploadInput.value = ''; // Limpiar el valor del input
-        }
+        if (fileUploadInput) fileUploadInput.value = '';
       };
       reader.readAsDataURL(file);
-      // Subir archivo
-      this.imageUrl= await this.uploadService.uploadFile(file);
+      try {
+        this.imageUrl = await this.uploadService.uploadFile(file);
+      } catch (error) {
+        console.error('Image upload failed', error);
+      } finally {
+        this.isUploading = false;
+      }
     }
   }
   async submitForm() {
+    if (this.isUploading) {
+      alert('Please wait for the image to finish uploading.');
+      return;
+    }
     const body:VeterinarianUpdateInformation = {
       name: this.myForm.value.name,
       description: this.myForm.value.description,

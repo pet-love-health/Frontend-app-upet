@@ -42,6 +42,7 @@ export class ProfilePetOwnerComponent {
   myForm: FormGroup;
   imageUrl: string | ArrayBuffer | null | undefined = null;
   dialogVisible: boolean = false;
+  isUploading: boolean = false;
 
   private readonly coordPattern = /^-?\d+(\.\d+)?,-?\d+(\.\d+)?$/;
 
@@ -94,6 +95,7 @@ export class ProfilePetOwnerComponent {
   async onImageSelect(event: any) {
     const file = event.files[0];
     if (file) {
+      this.isUploading = true;
       const reader = new FileReader();
       reader.onload = (e) => {
         this.imageUrl = e.target?.result;
@@ -101,11 +103,21 @@ export class ProfilePetOwnerComponent {
         if (fileUploadInput) fileUploadInput.value = '';
       };
       reader.readAsDataURL(file);
-      this.imageUrl = await this.uploadService.uploadFile(file);
+      try {
+        this.imageUrl = await this.uploadService.uploadFile(file);
+      } catch (error) {
+        console.error('Image upload failed', error);
+      } finally {
+        this.isUploading = false;
+      }
     }
   }
 
   submitForm() {
+    if (this.isUploading) {
+      alert('Please wait for the image to finish uploading.');
+      return;
+    }
     const body: PetOwnerUpdateInformation = {
       name: this.myForm.value.name,
       numberPhone: this.myForm.value.phone_number,

@@ -52,10 +52,10 @@
     </div>
   </div>
 
-  <div class="buttonc mt-3 mb-3 card flex flex-column justify-content-center align-items-center">
+  <div *ngIf="isVet && isUpcoming" class="buttonc mt-3 mb-3 card flex flex-column justify-content-center align-items-center">
     <p-button (click)="openDialog()" label="Complete"></p-button>
   </div>
-  <div class="buttonc2 mt-3 mb-3 card flex flex-column justify-content-center align-items-center">
+  <div *ngIf="isVet && isUpcoming" class="buttonc2 mt-3 mb-3 card flex flex-column justify-content-center align-items-center">
     <p-button (click)="cancel()" label="Cancel"></p-button>
   </div>
 </div>

@@ -50,15 +50,18 @@ export class FormAddPetComponent {
   myForm:FormGroup;
   imageUrl: string | ArrayBuffer | null | undefined = null;
   private uploadedUrl: string | undefined = undefined;
+  isUploading: boolean = false;
   genders!: Gender [];
   speciesList = ['Dog', 'Cat', 'Bird', 'Fish', 'Reptile', 'Rodent', 'Rabbit', 'Other'];
   buttonTitle:string = "";
 
 
   ngOnInit() {
-    console.log({location:"Form edit pet",pet:this.pet});
+    this.genders = [
+      {name:"Male", id: 1},
+      {name:"Female", id: 2},
+    ];
 
-    console.log({mode:this.mode, petEdit:this.pet});
     this.myForm = this.fb.group<PetResponse>({
       name: this.mode === TypeForm.ADD ? "" : this.pet?.name,
       breed: this.mode === TypeForm.ADD ? "" : this.pet?.breed,
@@ -67,13 +70,9 @@ export class FormAddPetComponent {
       gender: this.mode === TypeForm.ADD ? undefined : this.getGenderByName(this.pet?.gender!),
       weight: this.mode === TypeForm.ADD ? undefined : this.pet?.weight,
       birthdate: this.mode === TypeForm.ADD ? undefined: new Date(this.pet?.birthdate!)
-    })
+    });
     this.imageUrl = this.pet?.image_url;
     this.buttonTitle = this.mode === TypeForm.ADD ? "Add" : "Edit";
-    this.genders = [
-      {name:"Male", id: 1},
-      {name:"Female", id: 2},
-    ]
 
     this.translateService.onLangChange.subscribe(lang => {
       this.initTranslations();
@@ -104,27 +103,32 @@ export class FormAddPetComponent {
   async onImageSelect(event:any) {
     const file = event.files[0];
     if (file) {
+      this.isUploading = true;
       const reader = new FileReader();
       reader.onload = (e) => {
         this.imageUrl = e.target?.result; // preview only (base64)
         const fileUploadInput = document.querySelector<HTMLInputElement>('input[type="file"]');
-        if (fileUploadInput) {
-          fileUploadInput.value = '';
-        }
+        if (fileUploadInput) fileUploadInput.value = '';
       };
       reader.readAsDataURL(file);
       try {
         this.uploadedUrl = await this.uploadService.uploadFile(file);
-        this.imageUrl = this.uploadedUrl; // update preview to final URL
+        this.imageUrl = this.uploadedUrl;
       } catch (error) {
         console.error('Error uploading file:', error);
         this.uploadedUrl = undefined;
+      } finally {
+        this.isUploading = false;
       }
     }
   }
   private readonly defaultImageUrl = 'https://image.freepik.com/vector-gratis/ilustracion-vector-dibujos-animados-lindo-animal-mascota_24640-53565.jpg';
 
   submitForm(){
+    if (this.isUploading) {
+      alert('Please wait for the image to finish uploading.');
+      return;
+    }
     const userId = this.authService.decodeToken()?.user_id!;
     const finalImageUrl = this.uploadedUrl
       ?? (this.mode === TypeForm.EDIT ? this.pet?.image_url : undefined)

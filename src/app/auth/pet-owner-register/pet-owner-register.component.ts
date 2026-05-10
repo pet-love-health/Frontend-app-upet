@@ -1,14 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { Component, OnDestroy } from '@angular/core';
+import { Component, NgZone, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Subject, Subscription } from 'rxjs';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 import { PetOwnerService } from '../../core/PetOwner/services/pet-owner.service';
 import { PetOwnerSchemaPost } from '../../core/PetOwner/schema/petowner.interface';
 import { AuthService } from '../../core/auth/services/auth.service';
 import { Router } from '@angular/router';
-import {TranslatePipe} from "@ngx-translate/core";
+import { TranslatePipe } from "@ngx-translate/core";
+import { LoginResponse } from '../../core/shared/login-response.interface';
+import { navigateTo } from '../shared/auth.utils';
+
+declare var google: any;
 
 @Component({
   selector: 'app-pet-owner-register',
@@ -26,13 +28,14 @@ export class PetOwnerRegisterComponent implements OnDestroy {
   locationSuggestions: any[] = [];
   submitted = false;
 
-  private locationCoordinates = '';
+  private selectedLocationName = '';
   private selectingLocation = false;
-  private locationSearch$ = new Subject<string>();
+  private autocompleteService: any;
+  private debounceTimer: any;
   private subs = new Subscription();
 
   constructor(
-    private http: HttpClient,
+    private ngZone: NgZone,
     private petOwnerService: PetOwnerService,
     private authService: AuthService,
     private router: Router,
@@ -45,12 +48,9 @@ export class PetOwnerRegisterComponent implements OnDestroy {
   }
 
   ngOnInit() {
-    this.subs.add(
-      this.locationSearch$.pipe(
-        debounceTime(500),
-        distinctUntilChanged()
-      ).subscribe(query => this.fetchLocationSuggestions(query))
-    );
+    if (typeof google !== 'undefined' && google.maps?.places) {
+      this.autocompleteService = new google.maps.places.AutocompleteService();
+    }
 
     this.subs.add(
       this.registerForm.get('location')!.valueChanges.subscribe(() => {
@@ -58,36 +58,41 @@ export class PetOwnerRegisterComponent implements OnDestroy {
           this.selectingLocation = false;
           return;
         }
-        this.locationCoordinates = '';
+        this.selectedLocationName = '';
       })
     );
   }
 
   ngOnDestroy() {
     this.subs.unsubscribe();
-    this.locationSearch$.complete();
+    if (this.debounceTimer) clearTimeout(this.debounceTimer);
   }
 
   onLocationInput(value: string) {
-    if (value && value.length >= 3) {
-      this.locationSearch$.next(value);
-    } else {
+    if (this.debounceTimer) clearTimeout(this.debounceTimer);
+    if (!value || value.length < 3) {
       this.locationSuggestions = [];
+      return;
     }
+    this.debounceTimer = setTimeout(() => this.fetchLocationSuggestions(value), 500);
   }
 
   private fetchLocationSuggestions(query: string) {
-    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&addressdetails=1&limit=5`;
-    this.http.get<any[]>(url).subscribe({
-      next: (data) => { this.locationSuggestions = data; },
-      error: () => { this.locationSuggestions = []; }
-    });
+    if (!this.autocompleteService) return;
+    this.autocompleteService.getPlacePredictions(
+      { input: query },
+      (predictions: any[], status: string) => {
+        this.ngZone.run(() => {
+          this.locationSuggestions = (status === 'OK' && predictions) ? predictions : [];
+        });
+      }
+    );
   }
 
-  selectLocation(suggestion: any) {
+  selectLocation(prediction: any) {
     this.selectingLocation = true;
-    this.locationCoordinates = `${suggestion.lat},${suggestion.lon}`;
-    this.registerForm.patchValue({ location: suggestion.display_name });
+    this.selectedLocationName = prediction.description;
+    this.registerForm.patchValue({ location: prediction.description });
     this.locationSuggestions = [];
   }
 
@@ -95,7 +100,7 @@ export class PetOwnerRegisterComponent implements OnDestroy {
     this.submitted = true;
     if (this.registerForm.invalid) return;
 
-    const location = this.locationCoordinates || this.registerForm.value.location;
+    const location = this.selectedLocationName || this.registerForm.value.location;
     const userData: PetOwnerSchemaPost = {
       numberPhone: this.registerForm.value.numberPhone,
       location
@@ -104,8 +109,8 @@ export class PetOwnerRegisterComponent implements OnDestroy {
     const user_id: number = this.authService.decodeToken()?.user_id!;
     if (user_id) {
       this.petOwnerService.createPetOwner(user_id, userData).subscribe({
-        next: () => this.router.navigate(['/pet-owner/home']),
-        error: (err) => {
+        next: (response: LoginResponse) => navigateTo(response.access_token, this.router, this.authService),
+        error: (err: any) => {
           console.error('Error en el registro', err);
           this.registerForm.reset();
         }

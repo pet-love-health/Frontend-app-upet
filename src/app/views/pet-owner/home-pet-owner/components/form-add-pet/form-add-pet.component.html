@@ -62,7 +62,7 @@
       </div>
       <div class="flex justify-content-around gap-2 mb-4">
         <p-button [label]="'form_add_pet.btn_cancel' | translate" severity="secondary" (onClick)="closeDialog()" />
-        <p-button [label]="buttonTitle" (onClick)="submitForm()"/>
+        <p-button [label]="isUploading ? 'Uploading...' : buttonTitle" (onClick)="submitForm()" [disabled]="isUploading"/>
       </div>
     </form>
 

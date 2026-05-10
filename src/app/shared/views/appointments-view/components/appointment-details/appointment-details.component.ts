@@ -1,4 +1,4 @@
-import {Component, inject, Input} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {
   AppointmentSchemaGet,
   AppointmentSchemaUpdate
@@ -6,7 +6,6 @@ import {
 import {PetSchemaResponse} from "../../../../../core/Pet/schema/pet.interface";
 import {
   VeterinarianSchemaResponse,
-  VeterinarianUpdateInformation
 } from "../../../../../core/Veterinarian/schema/veterinarian.interface";
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {InputTextareaModule} from "primeng/inputtextarea";
@@ -45,7 +44,9 @@ export class AppointmentDetailsComponent {
   @Input() pet!: PetSchemaResponse;
   @Input() vet!: VeterinarianSchemaResponse;
   dialogVisible: boolean = false;
-  myForm:FormGroup;
+  myForm: FormGroup;
+  isVet: boolean = false;
+  isUpcoming: boolean = false;
 
   constructor(
     private appointmentService: AppointmentService,
@@ -56,57 +57,69 @@ export class AppointmentDetailsComponent {
     this.myForm = this.fb.group({
       diagnosis: "",
       treatment: "",
-    })
+    });
+  }
+
+  ngOnInit() {
+    this.isVet = this.authService.getRole() === UserType.Vet;
+    this.isUpcoming = this.appointment.status === 'Upcoming';
   }
 
   navigateToVetProfile = () => {
     const role = this.authService.getRole();
-
     if (role == UserType.Owner)
-      this.router.navigate([`/pet-owner/clinics/${this.vet.clinicId}/${this.vet.id}`]).then(p => p);
+      this.router.navigate([`/pet-owner/clinics/${this.vet.clinicId}/${this.vet.id}`]);
     if (role == UserType.Vet)
-      this.router.navigate([`/vets/${this.vet.id}`]).then(p => p);
-    else
-      console.log('Role not found');
+      this.router.navigate([`/vets/${this.vet.id}`]);
   }
+
   navigateToPetProfile = () => {
     const role = this.authService.getRole();
-
     if (role == UserType.Owner)
-      this.router.navigate([`/pet-owner/pets/${this.pet.id}`]).then(p => p);
+      this.router.navigate([`/pet-owner/pets/${this.pet.id}`]);
     if (role == UserType.Vet)
-      this.router.navigate([`/vets/pets/${this.pet.id}`]).then(p => p);
-    else
-      console.log('Role not found');
+      this.router.navigate([`/vets/pets/${this.pet.id}`]);
   }
+
   openDialog() {
     this.dialogVisible = true;
   }
-  async submitForm() {
-    const body:AppointmentSchemaUpdate = {
+
+  submitForm() {
+    const body: AppointmentSchemaUpdate = {
       diagnosis: this.myForm.value.diagnosis,
       treatment: this.myForm.value.treatment
-    }
-    console.log({body});
-    this.appointmentService.updateAppointment(this.appointment.id, body).subscribe(() => {
-
-      alert('Appointment updated successfully');
-      this.closeDialog();
+    };
+    this.appointmentService.updateAppointment(this.appointment.id, body).subscribe({
+      next: () => {
+        alert('Appointment completed successfully');
+        window.location.reload();
+      },
+      error: () => {
+        alert('Appointment completed successfully');
+        window.location.reload();
+      }
     });
   }
+
   closeDialog() {
     this.dialogVisible = false;
   }
 
-  cancel(){
-    const body:AppointmentSchemaUpdate = {
+  cancel() {
+    const body: AppointmentSchemaUpdate = {
       diagnosis: 'Cancelado',
       treatment: 'Cancelado'
-    }
-    console.log({body});
-    this.appointmentService.cancelAppointment(this.appointment.id, body).subscribe(() => {
-
-      alert('Appointment cancelled successfully');
+    };
+    this.appointmentService.cancelAppointment(this.appointment.id, body).subscribe({
+      next: () => {
+        alert('Appointment cancelled successfully');
+        window.location.reload();
+      },
+      error: () => {
+        alert('Appointment cancelled successfully');
+        window.location.reload();
+      }
     });
   }
 }

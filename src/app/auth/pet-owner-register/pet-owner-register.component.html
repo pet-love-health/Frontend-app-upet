@@ -18,7 +18,7 @@
             <input type="text" id="location" formControlName="location" (input)="onLocationInput($any($event.target).value)" class="text-lg w-full h-12 px-3 border border-gray-300 rounded-md" />
             <div class="suggestions">
               <ul class="mt-1">
-                <li *ngFor="let suggestion of locationSuggestions" (click)="selectLocation(suggestion)" class="cursor-pointer hover:bg-gray-200 p-2 rounded-md">{{ suggestion.display_name }}</li>
+                <li *ngFor="let suggestion of locationSuggestions" (click)="selectLocation(suggestion)" class="cursor-pointer hover:bg-gray-200 p-2 rounded-md">{{ suggestion.description }}</li>
               </ul>
             </div>
             <div *ngIf="registerForm.get('location')?.invalid && (submitted || registerForm.get('location')?.touched)" class="text-red-500">{{"auth.location_required"|translate}}</div>

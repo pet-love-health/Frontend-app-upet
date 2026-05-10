@@ -1,0 +1,68 @@
+<!-- Botón flotante -->
+<div class="chat-launcher" [class.open]="isOpen" (click)="toggleChat()">
+  <svg *ngIf="!isOpen" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+  </svg>
+  <svg *ngIf="isOpen" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+  </svg>
+</div>
+
+<!-- Ventana del chat -->
+<div class="chat-window" [class.visible]="isOpen">
+
+  <!-- Header -->
+  <div class="chat-header">
+    <div class="bot-avatar">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7H3a7 7 0 0 1 7-7h1V5.73A2 2 0 0 1 10 4a2 2 0 0 1 2-2zM7.5 13a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm9 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM3 20v-1a5 5 0 0 1 5-5h8a5 5 0 0 1 5 5v1H3z"/>
+      </svg>
+    </div>
+    <div class="bot-info">
+      <span class="bot-name">Asistente Virtual</span>
+      <span class="bot-status">
+        <span class="status-dot"></span>En línea
+      </span>
+    </div>
+  </div>
+
+  <!-- Mensajes -->
+  <div class="chat-messages" #messagesContainer>
+    <div
+      *ngFor="let msg of messages"
+      class="message-wrapper"
+      [class.user-wrapper]="msg.role === 'user'"
+    >
+      <div class="message" [class.user-msg]="msg.role === 'user'" [class.bot-msg]="msg.role === 'bot'">
+        {{ msg.content }}
+      </div>
+      <span class="msg-time">
+        {{ msg.timestamp | date: 'HH:mm' }}
+      </span>
+    </div>
+
+    <!-- Indicador de escritura -->
+    <div class="message-wrapper" *ngIf="isLoading">
+      <div class="message bot-msg typing-indicator">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Input -->
+  <div class="chat-input-area">
+    <textarea
+      [(ngModel)]="userInput"
+      (keydown)="onKeyDown($event)"
+      placeholder="Escribe tu mensaje..."
+      rows="1"
+      [disabled]="isLoading"
+    ></textarea>
+    <button class="send-btn" (click)="sendMessage()" [disabled]="!userInput.trim() || isLoading">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+      </svg>
+    </button>
+  </div>
+
+</div>

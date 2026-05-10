@@ -10,7 +10,6 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {BrowserModule} from "@angular/platform-browser";
 import {TranslateService} from "@ngx-translate/core";
 
-
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -19,7 +18,7 @@ import {TranslateService} from "@ngx-translate/core";
     AngularFireModule,
     SidebarComponent,
     NgClass,
-    NavBarComponent,
+    NavBarComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'

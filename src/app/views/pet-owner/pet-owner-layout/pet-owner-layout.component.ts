@@ -4,6 +4,7 @@ import {SidebarComponent} from "../../../shared/components/sidebar/sidebar.compo
 import {RouterOutlet} from "@angular/router";
 import {NgClass} from "@angular/common";
 import {TranslateService} from "@ngx-translate/core";
+import { ChatbotComponent } from '../../../shared/components/chatbot/chatbot.component';
 
 @Component({
   selector: 'app-pet-owner-layout',
@@ -12,7 +13,8 @@ import {TranslateService} from "@ngx-translate/core";
     NavBarComponent,
     SidebarComponent,
     RouterOutlet,
-    NgClass
+    NgClass,
+    ChatbotComponent
   ],
   templateUrl: './pet-owner-layout.component.html',
   styleUrl: './pet-owner-layout.component.css'

@@ -3,6 +3,8 @@ import {NavBarComponent} from "../../../shared/components/nav-bar/nav-bar.compon
 import {RouterOutlet} from "@angular/router";
 import {SidebarComponent} from "../../../shared/components/sidebar/sidebar.component";
 import {NgClass} from "@angular/common";
+import { ChatbotComponent } from '../../../shared/components/chatbot/chatbot.component';
+
 
 @Component({
   selector: 'app-vet-layout',
@@ -11,7 +13,8 @@ import {NgClass} from "@angular/common";
     NavBarComponent,
     RouterOutlet,
     SidebarComponent,
-    NgClass
+    NgClass,
+    ChatbotComponent
   ],
   templateUrl: './vet-layout.component.html',
   styleUrl: './vet-layout.component.css'

@@ -49,7 +49,9 @@ export class FormAddPetComponent {
 
   myForm:FormGroup;
   imageUrl: string | ArrayBuffer | null | undefined = null;
+  private uploadedUrl: string | undefined = undefined;
   genders!: Gender [];
+  speciesList = ['Dog', 'Cat', 'Bird', 'Fish', 'Reptile', 'Rodent', 'Rabbit', 'Other'];
   buttonTitle:string = "";
 
 
@@ -100,30 +102,38 @@ export class FormAddPetComponent {
 
 
   async onImageSelect(event:any) {
-    const file = event.files[0]; // Obtener el primer archivo seleccionado
-    console.log(file);
+    const file = event.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        this.imageUrl = e.target?.result; // Asigna la vista previa
-        // Limpiar el input del archivo después de cargar la imagen
+        this.imageUrl = e.target?.result; // preview only (base64)
         const fileUploadInput = document.querySelector<HTMLInputElement>('input[type="file"]');
         if (fileUploadInput) {
-          fileUploadInput.value = ''; // Limpiar el valor del input
+          fileUploadInput.value = '';
         }
       };
       reader.readAsDataURL(file);
-      // Subir archivo
-       this.imageUrl= await this.uploadService.uploadFile(file);
+      try {
+        this.uploadedUrl = await this.uploadService.uploadFile(file);
+        this.imageUrl = this.uploadedUrl; // update preview to final URL
+      } catch (error) {
+        console.error('Error uploading file:', error);
+        this.uploadedUrl = undefined;
+      }
     }
   }
+  private readonly defaultImageUrl = 'https://image.freepik.com/vector-gratis/ilustracion-vector-dibujos-animados-lindo-animal-mascota_24640-53565.jpg';
+
   submitForm(){
     const userId = this.authService.decodeToken()?.user_id!;
+    const finalImageUrl = this.uploadedUrl
+      ?? (this.mode === TypeForm.EDIT ? this.pet?.image_url : undefined)
+      ?? this.defaultImageUrl;
     const petRequest:PetSchemaRequest = {
       ...this.myForm.value,
       birthdate: formatDateToYYYYMMDD(this.myForm.value["birthdate"]),
       gender: this.myForm.value.gender["name"],
-      image_url: this.imageUrl as string
+      image_url: finalImageUrl
     };
     console.log({petRequest});
     if(this.mode === TypeForm.ADD){

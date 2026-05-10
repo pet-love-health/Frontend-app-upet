@@ -29,10 +29,11 @@
         </p-floatLabel>
       </div>
       <div class="card flex justify-content-center mb-4">
-        <p-floatLabel>
-          <input pInputText id="species" formControlName="species" />
-          <label for="species">{{"form_add_pet.species" | translate}}</label>
-        </p-floatLabel>
+        <p-dropdown
+          [options]="speciesList"
+          formControlName="species"
+          [placeholder]="'form_add_pet.species' | translate"
+          [style]="{'width':'15rem'}"/>
       </div>
       <div class="card flex justify-content-center mb-4">
         <p-floatLabel>

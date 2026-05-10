@@ -32,7 +32,7 @@ export class PetOwnerRegisterComponent {
     private formBuilder: FormBuilder // Usa FormBuilder para crear el formulario
   ) {
     this.registerForm = this.formBuilder.group({
-      numberPhone: ['', Validators.required],
+      numberPhone: ['', [Validators.required, Validators.pattern(/^\d{9}$/)]],
       location: ['', Validators.required]
     });
   }

@@ -12,41 +12,9 @@
       <div class="header-profile-button mr-3">
         <button (click)="openDialogEdit()"><span class="pi pi-pencil"></span> {{"pet_profile.edit_profile" | translate}}</button>
       </div>
-      @if(isTracked){
-        <div class="header-profile-button mr-3 noTracked">
-          <button (click)="openDialogStopTracking()"><span class="pi pi-wifi"></span> {{"pet_profile.stop_tracking" | translate}}</button>
-        </div>
-      }@else {
-        <div class="header-profile-button mr-3 isTracked">
-          <button (click)="openDialogTracking()"><span class="pi pi-wifi"></span> {{"pet_profile.start_tracking" | translate}}</button>
-        </div>
-      }
     </div>
 
   </div>
-  <ng-container *ngIf="isTracked">
-    <div>
-      IoT information (<strong>{{petCollarData.serial_number}}</strong>)
-    </div>
-    <div class="badges-container">
-      <div title="Temperatura en grados centigrados" class="iot-item">
-        <div>Battery<span class="material-symbols-outlined">charging_station</span></div>
-        <div class="value">{{ petCollarData.battery }} %</div>
-      </div>
-      <div title="Temperatura en grados centigrados" class="iot-item">
-        <div>Temperature <span class="material-symbols-outlined">device_thermostat</span></div>
-        <div class="value">{{ petCollarData.temperature }} ªC</div>
-      </div>
-      <div title="Latidos por minuto" class="iot-item">
-        <div>LPM<span class="material-symbols-outlined">cardiology</span></div>
-        <div class="value">{{ petCollarData.lpm }} lpm</div>
-      </div>
-      <div class="iot-item justify-content-center" (click)="openMapDialog()">
-        <div>GPS <span class="material-symbols-outlined">map</span></div>
-      </div>
-    </div>
-  </ng-container>
-
 
   <div>
     General Information
@@ -127,30 +95,4 @@
 </div>
 <p-dialog *ngIf="visible" [header]="'pet_profile.edit_pet' | translate" [modal]="true" [(visible)]="visible" [style]="{ width: '40rem' }">
   <app-form-add-pet [pet]="pet" [closeDialog]="closeDialogEdit" [mode]="TypeForm.EDIT"></app-form-add-pet>
-</p-dialog>
-
-<p-dialog  header="Start tracking" [modal]="true" [(visible)]="dialogStartTrackVisible" [style]="{ width: '40rem' }">
-  <p>Do you want to start tracking your pet?</p>
-  <form [formGroup]="productCodeForm">
-    <div class="card flex justify-content-center mb-4">
-      <p-floatLabel class="mt-4">
-        <input pInputText id="code"  formControlName="productCode" />
-        <label for="code">Enter the product code</label>
-      </p-floatLabel>
-    </div>
-    <div class="flex justify-content-around gap-2 mb-4">
-      <p-button label="Cancel" severity="secondary" (onClick)="closeDialogTracking()" />
-      <p-button label="Start" (onClick)="startTrack()"/>
-    </div>
-  </form>
-</p-dialog>
-<p-dialog header="Stop tracking" [modal]="true" [(visible)]="dialogStopTrackVisible" [style]="{ width: '40rem' }">
-  <p>Do you want stop tracking to your pet?</p>Add commentMore actions
-  <div class="flex justify-content-around gap-2 mb-4 mt-3">
-    <p-button label="Cancel" severity="secondary" (onClick)="closeDialogStopTracking()" />Add commentMore actions
-    <p-button label="Stop" (onClick)="stopTrack()"/>
-  </div>
-</p-dialog>
-<p-dialog [header]="'Location of my pet'" [modal]="true"  [(visible)]="dialogMapVisible"  [style]="{ width: '40rem' }">
-  <app-custom-map [closeDialog]="closeMapDialog" [markers]="petMarker"></app-custom-map>
 </p-dialog>

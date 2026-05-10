@@ -79,38 +79,6 @@
   margin: 0 auto;
 }
 
-.isTracked button{
-  background-color: #059669;
-  color: var(--color-white);
-}
-
-.noTracked button{
-  background-color: #dc2626;
-  color: white;
-}
-
-.iot-item{
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  width: 250px;
-  height: 100px;
-  border-radius: 10px;
-  background-color: var(--color-button-secondary);
-  color: var(--color-white);
-  margin: 10px;
-  border: 1px solid var(--border-color);
-  transition: all 0.3s ease;
-}
-
-.iot-item:hover{
-  background-color: #059669;
-  cursor: pointer;
-  scale: 1.05;
-}
-
 .value{
   font-size: 1.5rem;
 }
@@ -130,13 +98,4 @@
 .dark-theme .container-image{
   background-color: var(--surface-card);
   border-color: var(--border-color);
-}
-
-.dark-theme .iot-item{
-  background-color: var(--color-button-secondary);
-  color: var(--color-white);
-}
-
-.dark-theme .iot-item:hover{
-  background-color: #059669;
 }

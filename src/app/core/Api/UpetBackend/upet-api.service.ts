@@ -7,7 +7,7 @@ import { Observable, throwError } from 'rxjs';
 })
 export class UpetApiService {
 
-  private readonly baseUrl: string = 'https://upet-backend-production.up.railway.app/api/v1';
+  private readonly baseUrl: string = 'https://upet-backend-w6wt.onrender.com/api/v1';
   //private readonly baseUrl: string = 'http://localhost:8000/api/v1';
 
 

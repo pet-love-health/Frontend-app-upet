@@ -31,7 +31,7 @@ export class ChatbotComponent implements OnInit, AfterViewChecked {
     // Mensaje de bienvenida
     this.messages.push({
       role: 'bot',
-      content: '¡Hola! 👋 ¿En qué puedo ayudarte hoy?',
+      content: '¡Hola! Soy Pandy 🐾 tu asistente virtual de UPet y estoy aquí para ayudarte con todo lo que tu mascota necesita 💛 Puedo ayudarte a encontrar veterinarias cercanas a ti, tips sobre comportamiento, bienestar e higiene ¿En qué te puedo ayudar hoy?',
       timestamp: new Date(),
     });
   }

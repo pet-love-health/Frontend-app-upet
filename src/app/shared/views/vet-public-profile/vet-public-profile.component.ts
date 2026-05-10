@@ -69,8 +69,8 @@ export class VetPublicProfileComponent {
     }
 
     loadReviews() {
-      // Hacemos la llamada a la API solo cuando vetId cambia y es válido
-      this.reviewService.getReviewsByVetId(this.vet.id).subscribe((data: ReviewSchemaGet[]) => {
+      const vetId = +this.activatedRoute.snapshot.params["vetId"];
+      this.reviewService.getReviewsByVetId(vetId).subscribe((data: ReviewSchemaGet[]) => {
         this.reviews = data.reverse();
       });
     }

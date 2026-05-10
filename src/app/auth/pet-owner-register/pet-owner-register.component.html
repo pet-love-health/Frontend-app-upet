@@ -8,14 +8,14 @@
         <div class="mt-4 px-20">
           <div class="flex flex-col mb-4 px-10">
             <label for="numberPhone" class="text-lg mb-2">{{"auth.phone"|translate}}</label>
-            <input type="text" id="numberPhone" formControlName="numberPhone" class="text-lg w-full h-12 px-3 border border-gray-300 rounded-md" />
+            <input type="tel" id="numberPhone" formControlName="numberPhone" maxlength="9" class="text-lg w-full h-12 px-3 border border-gray-300 rounded-md" />
             <div *ngIf="registerForm.get('numberPhone')?.errors?.['required'] && (submitted || registerForm.get('numberPhone')?.touched)" class="text-red-500">{{"auth.phone_required" | translate}}</div>
             <div *ngIf="registerForm.get('numberPhone')?.errors?.['pattern'] && (submitted || registerForm.get('numberPhone')?.touched)" class="text-red-500">El teléfono debe tener exactamente 9 dígitos numéricos</div>
           </div>
 
           <div class="flex flex-col mb-4">
             <label for="location" class="text-lg mb-2">{{"auth.location"|translate}}</label>
-            <input type="text" id="location" formControlName="location" (input)="getLocationSuggestions(registerForm.get('location')?.value)" class="text-lg w-full h-12 px-3 border border-gray-300 rounded-md" />
+            <input type="text" id="location" formControlName="location" (input)="onLocationInput($any($event.target).value)" class="text-lg w-full h-12 px-3 border border-gray-300 rounded-md" />
             <div class="suggestions">
               <ul class="mt-1">
                 <li *ngFor="let suggestion of locationSuggestions" (click)="selectLocation(suggestion)" class="cursor-pointer hover:bg-gray-200 p-2 rounded-md">{{ suggestion.display_name }}</li>

@@ -13,7 +13,7 @@ import {FileUploadModule} from "primeng/fileupload";
 import {FloatLabelModule} from "primeng/floatlabel";
 import {InputTextModule} from "primeng/inputtext";
 import {NgIf} from "@angular/common";
-import {FormBuilder, FormGroup, ReactiveFormsModule} from "@angular/forms";
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {ToastModule} from "primeng/toast";
 import {PetSchemaRequest} from "../../../core/Pet/schema/pet.interface";
 import {formatDateToYYYYMMDD} from "../../../shared/helpers/date.formater";
@@ -59,10 +59,10 @@ export class ProfilePetOwnerComponent {
   )
   {
     this.myForm = this.fb.group({
-      name: "",
-      phone_number: "",
-      location: "",
-      image_url: "",
+      name: ["", Validators.required],
+      phone_number: ["", [Validators.required, Validators.pattern(/^\d{9}$/)]],
+      location: ["", Validators.required],
+      image_url: [""],
     })
 
   }
